@@ -16,7 +16,6 @@ func loadACoin(t *testing.T) func(coinIn int) {
     var err error
     return func(coinIn int)  {
         err = machine.AcceptCoins(coinIn)
-        fmt.Println(strconv.Itoa(localTotal))
         if err == nil {
             // the machine took the coin fine 
             localTotal += coinIn
@@ -33,13 +32,16 @@ func loadACoin(t *testing.T) func(coinIn int) {
 
 func TestAcceptCoins(t *testing.T) {
     testAddingThisCoin := loadACoin(t)
-    testAddingThisCoin(5)
-    testAddingThisCoin(10)
-    testAddingThisCoin(25)
-    testAddingThisCoin(11)
-    
-    if machine.RunningTotal != (5 + 10 + 25) {
-        t.Errorf("expecting " + strconv.Itoa((5 + 10 + 25)) + ", got " + strconv.Itoa(machine.RunningTotal))
+    coinTests := []int{1,5,10,25,11}
+    coinTestSum := 0
+    for _,coin := range(coinTests) {
+        testAddingThisCoin(coin)
+        if VendingMachine.IsValidCoin(coin) {
+            coinTestSum += coin 
+        }
+    }
+    if machine.RunningTotal != coinTestSum {
+        t.Errorf("expecting " + strconv.Itoa(coinTestSum) + ", got " + strconv.Itoa(machine.RunningTotal))
     }
 }
 

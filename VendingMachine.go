@@ -27,7 +27,7 @@ func (m *Machine) ToString() string {
 // AcceptCoins will add the input coin to the running total
 func (m *Machine) AcceptCoins(c int) error {
     var err error
-    if isValidCoin(c) { 
+    if IsValidCoin(c) { 
         m.RunningTotal += c
     } else {
         err = errors.New("invalid coin value: " + strconv.Itoa(c))
@@ -35,7 +35,8 @@ func (m *Machine) AcceptCoins(c int) error {
     return err
 }
 
-func isValidCoin(c int) bool {
+// IsValidCoin will check if the input is of value 1, 5, 10, or 25
+func IsValidCoin(c int) bool {
     validCoins := []int{1, 5, 10, 25}
     for _, vc := range validCoins {
         if c == vc {
