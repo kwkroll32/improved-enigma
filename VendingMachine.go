@@ -18,7 +18,10 @@ func NewMachine() *Machine {
 
 // ToString will return a string representation of this machine
 func (m *Machine) ToString() string {
-    return "a machine"
+    outstr := "\n == A Vending Machine == \n"
+    outstr += " Running Total:\t" + strconv.Itoa(m.RunningTotal) + "\n"
+    outstr += " ======================= \n"
+    return outstr
 }
 
 // AcceptCoins will add the input coin to the running total
