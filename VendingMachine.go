@@ -2,6 +2,7 @@ package VendingMachine
 import (
     "errors"
     "strconv"
+    "GoVending/Coins"
 )
 
 /*
@@ -49,11 +50,18 @@ func (m *Machine) AcceptCoins(c int) error {
 
 // IsValidCoin will check if the input is of value 1, 5, 10, or 25
 func IsValidCoin(c int) bool {
-    validCoins := []int{1, 5, 10, 25}
+    validCoins := []int{5, 10, 25}
     for _, vc := range validCoins {
         if c == vc {
             return true
         }
     }
     return false
+}
+
+// IdentifyCoin will identify the coin and return the numerical value 
+func IdentifyCoin(coin Coins.Coin) int {
+    //for coinName, coinProperties := range(Coins.CoinTypes) {
+    //}
+    return 0
 }

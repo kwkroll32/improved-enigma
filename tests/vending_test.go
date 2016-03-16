@@ -2,6 +2,7 @@ package main
 
 import (
     "GoVending"
+    "GoVending/Coins"
     "testing"
     "fmt"
     "strconv"
@@ -47,6 +48,14 @@ func TestAcceptCoins(t *testing.T) {
     if machine.RunningTotal != coinTestSum {
         t.Errorf("expecting " + strconv.Itoa(coinTestSum) + ", got " + strconv.Itoa(machine.RunningTotal))
     }
+}
+
+func TestIdentifyCoins(t *testing.T) {
+    coin := Coins.NewCoin("penny")
+    if coin.Value != 1 {
+        t.Errorf("expecting " + strconv.Itoa(1) + ", got " + strconv.Itoa(coin.Value))
+    }
+    
 }
 
 func TestMain(m *testing.M) {
