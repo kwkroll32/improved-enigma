@@ -16,8 +16,8 @@ var CoinTypes = map[string]map[string]float32{
         "quarter":{"weight":5.670, "diameter":24.26, "thickness":1.75, "value":25}}
         
 // NewCoin is a constructor for a new coin
-func NewCoin(inCoinKind string) *Coin {
-    coin := new(Coin)
+func NewCoin(inCoinKind string) Coin {
+    var coin Coin
     coin.Weight = CoinTypes[inCoinKind]["weight"]
     coin.Diameter = CoinTypes[inCoinKind]["diameter"]
     coin.Thickness = CoinTypes[inCoinKind]["thickness"]

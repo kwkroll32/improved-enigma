@@ -55,23 +55,13 @@ func TestAcceptCoins(t *testing.T) {
 }
 
 func TestIdentifyCoins(t *testing.T) {
-    coin := Coins.NewCoin("penny")
-    if VendingMachine.IdentifyCoin(coin) != 1 {
-        throwTestingErrorInt(t,1, coin.Value)
+    var coin Coins.Coin
+    for name, expVal := range(map[string]int{"penny":1, "nickel":5, "dime":10, "quarter":25}) {
+        coin = Coins.NewCoin(name)
+        if VendingMachine.IdentifyCoin(coin) != expVal {
+            throwTestingErrorInt(t, expVal, coin.Value)
+        }
     }
-    coin = Coins.NewCoin("nickel")
-    if VendingMachine.IdentifyCoin(coin) != 5 {
-        throwTestingErrorInt(t,5, coin.Value)
-    }
-    coin = Coins.NewCoin("dime")
-    if VendingMachine.IdentifyCoin(coin) != 10 {
-        throwTestingErrorInt(t,10, coin.Value)
-    }
-    coin = Coins.NewCoin("quarter")
-    if VendingMachine.IdentifyCoin(coin) != 25 {
-        throwTestingErrorInt(t,25, coin.Value)
-    }
-    
 }
 
 func TestMain(m *testing.M) {

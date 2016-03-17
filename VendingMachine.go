@@ -60,7 +60,7 @@ func IsValidCoin(c int) bool {
 }
 
 // IdentifyCoin will identify the coin and return the numerical value 
-func IdentifyCoin(coin *Coins.Coin) int {
+func IdentifyCoin(coin Coins.Coin) int {
     for _, coinProperties := range(Coins.CoinTypes) {
         if coin.Thickness == coinProperties["thickness"] && coin.Weight == coinProperties["weight"] && coin.Diameter == coinProperties["diameter"] {
             return int(coinProperties["value"])
