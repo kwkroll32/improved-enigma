@@ -52,8 +52,20 @@ func TestAcceptCoins(t *testing.T) {
 
 func TestIdentifyCoins(t *testing.T) {
     coin := Coins.NewCoin("penny")
-    if coin.Value != 1 {
+    if VendingMachine.IdentifyCoin(coin) != 1 {
         t.Errorf("expecting " + strconv.Itoa(1) + ", got " + strconv.Itoa(coin.Value))
+    }
+    coin = Coins.NewCoin("nickel")
+    if VendingMachine.IdentifyCoin(coin) != 5 {
+        t.Errorf("expecting " + strconv.Itoa(5) + ", got " + strconv.Itoa(coin.Value))
+    }
+    coin = Coins.NewCoin("dime")
+    if VendingMachine.IdentifyCoin(coin) != 10 {
+        t.Errorf("expecting " + strconv.Itoa(10) + ", got " + strconv.Itoa(coin.Value))
+    }
+    coin = Coins.NewCoin("quarter")
+    if VendingMachine.IdentifyCoin(coin) != 25 {
+        t.Errorf("expecting " + strconv.Itoa(25) + ", got " + strconv.Itoa(coin.Value))
     }
     
 }
