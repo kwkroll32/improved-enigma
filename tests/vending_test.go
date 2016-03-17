@@ -13,6 +13,10 @@ import (
 // initialize a vending machine instance for the tests
 var machine = VendingMachine.NewMachine()
 
+func throwTestingErrorInt(t *testing.T, expected, received int) {
+    t.Errorf("expecting " + strconv.Itoa(expected) +", got " + strconv.Itoa(received) )
+}
+
 func loadACoin(t *testing.T) func(coinIn int) {
     // initialize the local total and error object
     // these are modified in subsequent runs of the closure
@@ -30,7 +34,7 @@ func loadACoin(t *testing.T) func(coinIn int) {
         }
         if machine.RunningTotal != localTotal {
             // the totals dont add up 
-            t.Errorf("expecting " + strconv.Itoa(localTotal) +", got " + strconv.Itoa(machine.RunningTotal) )
+            throwTestingErrorInt(t, localTotal, machine.RunningTotal)
         }
     }
 }
@@ -46,26 +50,26 @@ func TestAcceptCoins(t *testing.T) {
         }
     }
     if machine.RunningTotal != coinTestSum {
-        t.Errorf("expecting " + strconv.Itoa(coinTestSum) + ", got " + strconv.Itoa(machine.RunningTotal))
+        throwTestingErrorInt(t, coinTestSum, machine.RunningTotal)
     }
 }
 
 func TestIdentifyCoins(t *testing.T) {
     coin := Coins.NewCoin("penny")
     if VendingMachine.IdentifyCoin(coin) != 1 {
-        t.Errorf("expecting " + strconv.Itoa(1) + ", got " + strconv.Itoa(coin.Value))
+        throwTestingErrorInt(t,1, coin.Value)
     }
     coin = Coins.NewCoin("nickel")
     if VendingMachine.IdentifyCoin(coin) != 5 {
-        t.Errorf("expecting " + strconv.Itoa(5) + ", got " + strconv.Itoa(coin.Value))
+        throwTestingErrorInt(t,5, coin.Value)
     }
     coin = Coins.NewCoin("dime")
     if VendingMachine.IdentifyCoin(coin) != 10 {
-        t.Errorf("expecting " + strconv.Itoa(10) + ", got " + strconv.Itoa(coin.Value))
+        throwTestingErrorInt(t,10, coin.Value)
     }
     coin = Coins.NewCoin("quarter")
     if VendingMachine.IdentifyCoin(coin) != 25 {
-        t.Errorf("expecting " + strconv.Itoa(25) + ", got " + strconv.Itoa(coin.Value))
+        throwTestingErrorInt(t,25, coin.Value)
     }
     
 }
