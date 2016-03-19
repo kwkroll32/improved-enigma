@@ -13,6 +13,8 @@ import (
 // initialize a vending machine instance for the tests
 var machine = VendingMachine.NewMachine()
 
+/* throwing all errors from the same function means that `go test` will report the same line number for all errors
+   but still tells from which function the error originated */
 func throwTestingErrorInt(t *testing.T, expected, received int) {
 	t.Errorf("expecting " + strconv.Itoa(expected) + ", got " + strconv.Itoa(received))
 }
@@ -47,20 +49,9 @@ func TestAcceptCoins(t *testing.T) {
 		Coins.NewCoin("dime"),
 		Coins.NewCoin("quarter"),
 		Coins.NewCoin("11-cent")}
-	//coinTestSum := 0
 	for _, coin := range coinTests {
 		testAddingThisCoin(coin)
-		/*
-		   if VendingMachine.IsValidCoinValue(coin.Value) {
-		       coinTestSum += coin.Value
-		   }
-		*/
 	}
-	/*
-	   if machine.RunningTotal != coinTestSum {
-	       throwTestingErrorInt(t, coinTestSum, machine.RunningTotal)
-	   }
-	*/
 }
 
 func TestIdentifyCoins(t *testing.T) {
@@ -71,6 +62,12 @@ func TestIdentifyCoins(t *testing.T) {
 			throwTestingErrorInt(t, expVal, coin.Value)
 		}
 	}
+}
+
+func TestReturnAllCoins(t *testing.T) {
+    for i, heldCoin := range(machine.InputCoins) {
+        machine.ReturnCoin(heldCoin)
+    }
 }
 
 func TestMain(m *testing.M) {
