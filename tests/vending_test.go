@@ -102,8 +102,9 @@ func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	}
 }
 
-func TestShowSelections(t *testing.T) {
-    machine.ShowSelections()
+func TestCustomerSelects(t *testing.T) {
+    machine.SelectProduct("chips")
+    
 }
 
 func TestMain(m *testing.M) {

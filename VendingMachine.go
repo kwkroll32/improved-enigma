@@ -12,10 +12,15 @@ import (
 */
 
 // Machine is a class to represent the vending machine
+/* Monitors total input by the customer (cents), 
+    the number of each coin inserted, 
+    important messages/prompts, 
+    and products w/ prices (cents) */
 type Machine struct {
 	RunningTotal int
 	InputCoins   map[Coins.Coin]int
 	messages     map[string]string
+    Products     map[string]int
 }
 
 // NewMachine is a constructor for a new machine
@@ -32,6 +37,11 @@ func NewMachine() *Machine {
 		"coin na": "COIN NOT AVAILABLE",
 		"insert":  "INSERT COIN",
 	}
+    m.Products = map[string]int{
+        "cola": 100,
+        "chips": 50,
+        "candy": 65,
+    }
 	return m
 }
 
@@ -82,6 +92,22 @@ func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 	}
     fmt.Println( m.messages["insert"])
 	return outCoins
+}
+
+// ShowSelections will print the available items and thier prices 
+func (m *Machine) ShowSelections() {
+    for product, price := range(m.Products) {
+        dollars := float64(price)/100.0
+        fmt.Println( product + " $" + strconv.FormatFloat(dollars,'f',2,32)  )
+    }
+}
+
+func (m *Machine) SelectProduct(product string) {
+    price := m.Products[product]
+    if  m.RunningTotal >= price {
+        // dispense product
+        
+    }
 }
 
 /*
