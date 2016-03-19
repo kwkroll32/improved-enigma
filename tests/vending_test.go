@@ -83,10 +83,16 @@ func TestReturnAllCoinsLoop(t *testing.T) {
 
 func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	machine.ReturnAllCoins()
+    if machine.Display != machine.Messages["insert"] {
+        t.Errorf("incorrect display. says '" + machine.Display + "' but should be '" + machine.Messages["insert"] + "'")
+    }
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
 	machine.AcceptCoins(Coins.NewCoin("nickel"))
+    if dollars := float64(machine.RunningTotal)/100.0; machine.Display != "$" + strconv.FormatFloat(dollars,'f',2,32) {
+        t.Errorf("incorrect display. says '" + machine.Display + "' but should be '" + "$" + strconv.FormatFloat(dollars,'f',2,32) + "'")
+    }
 	machine.AcceptCoins(Coins.NewCoin("nickel"))
 	machine.AcceptCoins(Coins.NewCoin("nickel"))
 	machine.AcceptCoins(Coins.NewCoin("quarter"))
@@ -100,9 +106,14 @@ func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
+    machine.Display = "force test fail"
+    if machine.Display == machine.Messages["insert"] {
+        t.Errorf("incorrect display. says '" + machine.Display + "' but should be '" + machine.Messages["insert"] + "'")
+    }
 }
 
 func TestCustomerSelects(t *testing.T) {
+    machine.ShowSelections()
     machine.SelectProduct("chips")
     
 }
