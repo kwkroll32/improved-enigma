@@ -136,6 +136,18 @@ func TestCustomerSelectsAtExactChange(t *testing.T) {
     }
 }
 
+func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
+    machine.ShowSelections()
+    machine.RunningTotal = machine.Products["chips"] + 50
+    machine.SelectProduct("chips")
+    if machine.Display != machine.Messages["thanks"] {
+        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"] )
+    }
+    if machine.RunningTotal != 0 {
+        throwTestingErrorInt(t, 0, machine.RunningTotal)
+    }
+}
+
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
