@@ -3,7 +3,7 @@ package main
 import (
 	"GoVending"
 	"GoVending/Coins"
-	"fmt"
+	//"fmt"
 	"os"
 	"strconv"
 	"testing"
@@ -19,6 +19,12 @@ func throwTestingErrorInt(t *testing.T, expected, received int) {
 	t.Errorf("expecting " + strconv.Itoa(expected) + ", got " + strconv.Itoa(received))
 }
 
+/* throwing all errors from the same function means that `go test` will report the same line number for all errors
+   but still tells from which function the error originated */
+func throwTestingErrorDisplayString(t *testing.T, expected, received string) {
+	t.Errorf("incorrect display. should be '" + expected + "', but it says '" + received + "'")
+}
+
 func loadACoin(t *testing.T) func(coinIn Coins.Coin) {
 	// initialize the local total and error object
 	// these are modified in subsequent runs of the closure
@@ -29,11 +35,17 @@ func loadACoin(t *testing.T) func(coinIn Coins.Coin) {
 		err = machine.AcceptCoins(coinIn)
 		if err == nil {
 			// the machine took the coin fine
+            if dollars := float64(machine.RunningTotal)/100.0; machine.Display != "$" + strconv.FormatFloat(dollars,'f',2,32) {
+                throwTestingErrorDisplayString(t, machine.Display, "$" + strconv.FormatFloat(dollars,'f',2,32))
+            }
 			localTotal += coinIn.Value
 		} else if err != nil {
 			// the machine failed to take this coin
 			// the coin should be returned
-			fmt.Println(err)
+            if machine.Display != machine.Messages["invalid"] {
+                throwTestingErrorDisplayString(t, machine.Messages["invalid"], machine.Display)
+            }
+			//fmt.Println(err)
 		}
 		if machine.RunningTotal != localTotal {
 			// the totals dont add up
@@ -84,14 +96,14 @@ func TestReturnAllCoinsLoop(t *testing.T) {
 func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	machine.ReturnAllCoins()
     if machine.Display != machine.Messages["insert"] {
-        t.Errorf("incorrect display. says '" + machine.Display + "' but should be '" + machine.Messages["insert"] + "'")
+        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["insert"])
     }
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
 	machine.AcceptCoins(Coins.NewCoin("nickel"))
     if dollars := float64(machine.RunningTotal)/100.0; machine.Display != "$" + strconv.FormatFloat(dollars,'f',2,32) {
-        t.Errorf("incorrect display. says '" + machine.Display + "' but should be '" + "$" + strconv.FormatFloat(dollars,'f',2,32) + "'")
+        throwTestingErrorDisplayString(t, machine.Display, "$" + strconv.FormatFloat(dollars,'f',2,32))
     }
 	machine.AcceptCoins(Coins.NewCoin("nickel"))
 	machine.AcceptCoins(Coins.NewCoin("nickel"))
@@ -108,14 +120,20 @@ func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	}
     machine.Display = "force test fail"
     if machine.Display == machine.Messages["insert"] {
-        t.Errorf("incorrect display. says '" + machine.Display + "' but should be '" + machine.Messages["insert"] + "'")
+        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["insert"] )
     }
 }
 
-func TestCustomerSelects(t *testing.T) {
+func TestCustomerSelectsAtExactChange(t *testing.T) {
     machine.ShowSelections()
+    machine.RunningTotal = machine.Products["chips"]
     machine.SelectProduct("chips")
-    
+    if machine.Display != machine.Messages["thanks"] {
+        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"] )
+    }
+    if machine.RunningTotal != 0 {
+        throwTestingErrorInt(t, 0, machine.RunningTotal)
+    }
 }
 
 func TestMain(m *testing.M) {

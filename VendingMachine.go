@@ -38,6 +38,7 @@ func NewMachine() *Machine {
 		"invalid": "INVALID COIN",
 		"coin na": "COIN NOT AVAILABLE",
 		"insert":  "INSERT COIN",
+        "thanks":  "THANK YOU",
 	}
     m.Products = map[string]int{
         "cola": 100,
@@ -111,7 +112,8 @@ func (m *Machine) SelectProduct(product string) {
     price := m.Products[product]
     if  m.RunningTotal >= price {
         // dispense product
-        
+        m.Display = m.Messages["thanks"]
+        m.RunningTotal -= price
     }
 }
 
