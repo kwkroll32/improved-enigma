@@ -4,6 +4,7 @@ import (
 	"GoVending/Coins"
 	"errors"
 	"strconv"
+    "fmt"
 )
 
 /*
@@ -49,6 +50,8 @@ func (m *Machine) AcceptCoins(inputCoin Coins.Coin) error {
 	if IsValidCoinValue(c) {
 		m.RunningTotal += c
 		m.InputCoins[inputCoin]++
+        dollars := float64(m.RunningTotal)/100.0
+        fmt.Println( "$ " + strconv.FormatFloat(dollars,'f',2,32)  )
 	} else {
 		err = errors.New(m.messages["invalid"])
 	}
@@ -69,7 +72,7 @@ func (m *Machine) ReturnCoin(heldCoin Coins.Coin) (Coins.Coin, error) {
 }
 
 // ReturnAllCoins will return all coins that the customer has input
-func (m *Machine) ReturnAllCoins() []Coins.Coin {
+func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 	var outCoins []Coins.Coin
 	for typeOfCoin, numberOfCoins := range m.InputCoins {
 		for number := 0; number < numberOfCoins; number++ {
@@ -77,6 +80,7 @@ func (m *Machine) ReturnAllCoins() []Coins.Coin {
 			outCoins = append(outCoins, coin)
 		}
 	}
+    fmt.Println( m.messages["insert"])
 	return outCoins
 }
 

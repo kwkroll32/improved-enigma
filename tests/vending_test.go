@@ -100,7 +100,10 @@ func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
+}
 
+func TestShowSelections(t *testing.T) {
+    machine.ShowSelections()
 }
 
 func TestMain(m *testing.M) {
