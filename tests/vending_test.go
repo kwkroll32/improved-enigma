@@ -32,6 +32,7 @@ func loadACoin(t *testing.T) func(coinIn Coins.Coin) {
 			localTotal += coinIn.Value
 		} else if err != nil {
 			// the machine failed to take this coin
+			// the coin should be returned
 			fmt.Println(err)
 		}
 		if machine.RunningTotal != localTotal {
@@ -64,16 +65,42 @@ func TestIdentifyCoins(t *testing.T) {
 	}
 }
 
-func TestReturnAllCoins(t *testing.T) {
-    for heldCoin := range(machine.InputCoins) {
-        machine.ReturnCoin(heldCoin)
-    }
-    coinCount := 0
-    for _,numberOfCoins := range(machine.InputCoins) {
-        coinCount += numberOfCoins
-    }
-    if coinCount != 0 { throwTestingErrorInt(t, 0, coinCount) }
-    if machine.RunningTotal != 0 { throwTestingErrorInt(t, 0, machine.RunningTotal) }
+func TestReturnAllCoinsLoop(t *testing.T) {
+	for heldCoin := range machine.InputCoins {
+		machine.ReturnCoin(heldCoin)
+	}
+	coinCount := 0
+	for _, numberOfCoins := range machine.InputCoins {
+		coinCount += numberOfCoins
+	}
+	if coinCount != 0 {
+		throwTestingErrorInt(t, 0, coinCount)
+	}
+	if machine.RunningTotal != 0 {
+		throwTestingErrorInt(t, 0, machine.RunningTotal)
+	}
+}
+
+func TestReturnAllCoinsMachineFunction(t *testing.T) {
+	machine.ReturnAllCoins()
+	if machine.RunningTotal != 0 {
+		throwTestingErrorInt(t, 0, machine.RunningTotal)
+	}
+	machine.AcceptCoins(Coins.NewCoin("nickel"))
+	machine.AcceptCoins(Coins.NewCoin("nickel"))
+	machine.AcceptCoins(Coins.NewCoin("nickel"))
+	machine.AcceptCoins(Coins.NewCoin("quarter"))
+	if machine.RunningTotal != 40 {
+		throwTestingErrorInt(t, 40, machine.RunningTotal)
+	}
+	returnedCoins := machine.ReturnAllCoins()
+	if len(returnedCoins) != 4 {
+		throwTestingErrorInt(t, 4, len(returnedCoins))
+	}
+	if machine.RunningTotal != 0 {
+		throwTestingErrorInt(t, 0, machine.RunningTotal)
+	}
+
 }
 
 func TestMain(m *testing.M) {

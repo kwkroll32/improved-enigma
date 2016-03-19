@@ -14,6 +14,7 @@ import (
 type Machine struct {
 	RunningTotal int
 	InputCoins   map[Coins.Coin]int
+	messages     map[string]string
 }
 
 // NewMachine is a constructor for a new machine
@@ -21,10 +22,15 @@ func NewMachine() *Machine {
 	m := new(Machine)
 	m.RunningTotal = 0
 	m.InputCoins = map[Coins.Coin]int{
-        Coins.NewCoin("penny"): 0,
-		Coins.NewCoin("nickel"): 0,
-		Coins.NewCoin("dime"): 0,
-		Coins.NewCoin("quarter"):0}
+		Coins.NewCoin("penny"):   0,
+		Coins.NewCoin("nickel"):  0,
+		Coins.NewCoin("dime"):    0,
+		Coins.NewCoin("quarter"): 0}
+	m.messages = map[string]string{
+		"invalid": "INVALID COIN",
+		"coin na": "COIN NOT AVAILABLE",
+		"insert":  "INSERT COIN",
+	}
 	return m
 }
 
@@ -44,22 +50,34 @@ func (m *Machine) AcceptCoins(inputCoin Coins.Coin) error {
 		m.RunningTotal += c
 		m.InputCoins[inputCoin]++
 	} else {
-		err = errors.New("invalid coin value: " + strconv.Itoa(c))
+		err = errors.New(m.messages["invalid"])
 	}
 	return err
 }
 
-// ReturnCoin will return a customer's coin 
+// ReturnCoin will return a customer's coin
 func (m *Machine) ReturnCoin(heldCoin Coins.Coin) (Coins.Coin, error) {
-    var err error
-    if m.InputCoins[heldCoin] != 0 {
-        // return one of these
-        m.InputCoins[heldCoin]--
-        m.RunningTotal -= heldCoin.Value
-        return heldCoin, err
-    }
-    err = errors.New("there aren't any of these coins")
-    return heldCoin, err    
+	var err error
+	if m.InputCoins[heldCoin] != 0 {
+		// return one of these
+		m.InputCoins[heldCoin]--
+		m.RunningTotal -= heldCoin.Value
+		return heldCoin, err
+	}
+	err = errors.New(m.messages["coin na"])
+	return heldCoin, err
+}
+
+// ReturnAllCoins will return all coins that the customer has input
+func (m *Machine) ReturnAllCoins() []Coins.Coin {
+	var outCoins []Coins.Coin
+	for typeOfCoin, numberOfCoins := range m.InputCoins {
+		for number := 0; number < numberOfCoins; number++ {
+			coin, _ := m.ReturnCoin(typeOfCoin)
+			outCoins = append(outCoins, coin)
+		}
+	}
+	return outCoins
 }
 
 /*
