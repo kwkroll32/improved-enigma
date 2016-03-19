@@ -13,14 +13,18 @@ import (
 // Machine is a class to represent the vending machine
 type Machine struct {
 	RunningTotal int
-	InputCoins   map[int]int
+	InputCoins   map[Coins.Coin]int
 }
 
 // NewMachine is a constructor for a new machine
 func NewMachine() *Machine {
 	m := new(Machine)
 	m.RunningTotal = 0
-	m.InputCoins = map[int]int{1: 0, 5: 0, 10: 0, 25: 0}
+	m.InputCoins = map[Coins.Coin]int{
+        Coins.NewCoin("penny"): 0,
+		Coins.NewCoin("nickel"): 0,
+		Coins.NewCoin("dime"): 0,
+		Coins.NewCoin("quarter"):0}
 	return m
 }
 
@@ -38,11 +42,23 @@ func (m *Machine) AcceptCoins(inputCoin Coins.Coin) error {
 	c := IdentifyCoin(inputCoin)
 	if IsValidCoinValue(c) {
 		m.RunningTotal += c
-		m.InputCoins[c]++
+		m.InputCoins[inputCoin]++
 	} else {
 		err = errors.New("invalid coin value: " + strconv.Itoa(c))
 	}
 	return err
+}
+
+// ReturnCoin will return a customer's coin 
+func (m *Machine) ReturnCoin(heldCoin Coins.Coin) (Coins.Coin, error) {
+    var err error
+    if m.InputCoins[heldCoin] != 0 {
+        // return one of these
+        m.InputCoins[heldCoin]--
+        return heldCoin, err
+    }
+    err = errors.New("there aren't any of these coins")
+    return heldCoin, err    
 }
 
 /*

@@ -65,9 +65,15 @@ func TestIdentifyCoins(t *testing.T) {
 }
 
 func TestReturnAllCoins(t *testing.T) {
-    for i, heldCoin := range(machine.InputCoins) {
+    for heldCoin := range(machine.InputCoins) {
         machine.ReturnCoin(heldCoin)
     }
+    coinCount := 0
+    for _,numberOfCoins := range(machine.InputCoins) {
+        coinCount += numberOfCoins
+    }
+    if coinCount != 0 { throwTestingErrorInt(t, 0, coinCount) }
+    if machine.RunningTotal != 0 { throwTestingErrorInt(t, 0, machine.RunningTotal) }
 }
 
 func TestMain(m *testing.M) {
