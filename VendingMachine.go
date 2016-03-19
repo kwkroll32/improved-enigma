@@ -55,6 +55,7 @@ func (m *Machine) ReturnCoin(heldCoin Coins.Coin) (Coins.Coin, error) {
     if m.InputCoins[heldCoin] != 0 {
         // return one of these
         m.InputCoins[heldCoin]--
+        m.RunningTotal -= heldCoin.Value
         return heldCoin, err
     }
     err = errors.New("there aren't any of these coins")
