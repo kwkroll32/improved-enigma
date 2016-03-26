@@ -14,12 +14,14 @@ import (
 // Machine is a class to represent the vending machine
 /* Monitors total input by the customer (cents),
    the number of each coin inserted,
+   the counts of each coin in the machine coin bank,
    important messages/prompts,
-   products w/ prices (cents),
+   products w/ prices (cents) and stock,
    and a string to display on screen */
 type Machine struct {
 	RunningTotal int
 	InputCoins   map[Coins.Coin]int
+    Bank         map[Coins.Coin]int
 	Messages     map[string]string
 	Products     map[string]int
     Stock        map[string]int
@@ -27,10 +29,6 @@ type Machine struct {
 }
 
 // NewMachine is a constructor for a new machine
-/* It records the total value of input coins,
-   the number of each coin type input,
-   available display messages, 
-   and products (prices and stock count) */
 func NewMachine() *Machine {
 	m := new(Machine)
 	m.RunningTotal = 0
@@ -39,12 +37,18 @@ func NewMachine() *Machine {
 		Coins.NewNickel():  0,
 		Coins.NewDime():    0,
 		Coins.NewQuarter(): 0}
+    m.Bank = map[Coins.Coin]int{
+        Coins.NewPenny():   50,
+		Coins.NewNickel():  50,
+		Coins.NewDime():    50,
+		Coins.NewQuarter(): 50}
 	m.Messages = map[string]string{
 		"invalid": "INVALID COIN",
 		"coin na": "COIN NOT AVAILABLE",
 		"insert":  "INSERT COIN",
 		"thanks":  "THANK YOU",
         "sold out": "SOLD OUT",
+        "exact change": "EXACT CHANGE ONLY",
 	}
 	m.Products = map[string]int{
 		"cola":  100,
@@ -150,6 +154,16 @@ func (m *Machine) SelectProduct(product string) {
         // sold out 
         m.Display = m.Messages["sold out"]
     }
+}
+
+// NeedsExactChange will alert the machine that it is not capable of returning change for any products
+func (m *Machine) NeedsExactChange() bool {
+    needExactChange := true
+    for _,coinCount := range(m.Bank) {
+        if coinCount > 0{needExactChange = false}
+    }
+    m.Display = m.Messages["exact change"]
+    return needExactChange
 }
 
 /*
