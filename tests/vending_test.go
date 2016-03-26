@@ -158,7 +158,7 @@ func TestMachineMakeChange(t *testing.T) {
 
 func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
 	machine.ShowSelections()
-	machine.RunningTotal = machine.Products["chips"] + 50
+	machine.RunningTotal = machine.Products["chips"] + 66
 	machine.SelectProduct("chips")
 	if machine.Display != machine.Messages["thanks"] {
 		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"])
@@ -168,8 +168,8 @@ func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
 		throwTestingErrorInt(t, 2, change[quarter])
 	}
 	for _, coin := range []Coins.Coin{dime, nickel, penny} {
-		if change[coin] != 0 {
-			throwTestingErrorInt(t, 0, change[coin])
+		if change[coin] != 1 {
+			throwTestingErrorInt(t, 1, change[coin])
 		}
 	}
 	if machine.RunningTotal != 0 {
