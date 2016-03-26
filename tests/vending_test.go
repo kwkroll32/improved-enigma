@@ -179,9 +179,10 @@ func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
 
 func TestSelectSomethingSoldOut(t *testing.T) {
     machine.RunningTotal = machine.Products["chips"]
+    machine.Stock["chips"] = 0
     machine.SelectProduct("chips")
     if machine.Display == machine.Messages["thanks"] {
-		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["sold out"])
+		throwTestingErrorDisplayString(t,machine.Messages["sold out"], machine.Display )
 	}
     if machine.RunningTotal != machine.Products["chips"] {
 		throwTestingErrorInt(t, machine.Products["chips"], machine.RunningTotal)

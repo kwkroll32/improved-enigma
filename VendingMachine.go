@@ -22,6 +22,7 @@ type Machine struct {
 	InputCoins   map[Coins.Coin]int
 	Messages     map[string]string
 	Products     map[string]int
+    Stock        map[string]int
 	Display      string
 }
 
@@ -39,11 +40,17 @@ func NewMachine() *Machine {
 		"coin na": "COIN NOT AVAILABLE",
 		"insert":  "INSERT COIN",
 		"thanks":  "THANK YOU",
+        "sold out": "SOLD OUT",
 	}
 	m.Products = map[string]int{
 		"cola":  100,
 		"chips": 50,
 		"candy": 65,
+	}
+    m.Stock = map[string]int{
+		"cola":  10,
+		"chips": 5,
+		"candy": 20,
 	}
 	m.Display = m.Messages["insert"]
 	return m
