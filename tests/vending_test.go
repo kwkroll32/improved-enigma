@@ -199,8 +199,23 @@ func TestSelectSomethingSoldOut(t *testing.T) {
 	}
 }
 
-func TestExactChangeOnly(t *testing.T) {
+func TestExactChangeOnlyAllZeros(t *testing.T) {
     machine.Bank = map[Coins.Coin]int{Coins.NewPenny():0, Coins.NewNickel():0, Coins.NewDime():0, Coins.NewQuarter():0}
+    if !machine.NeedsExactChange() {
+        t.Errorf("machine needs exact change, but doesn't know it")
+    }
+    if machine.Display != machine.Messages["exact change"] {
+        throwTestingErrorDisplayString(t, machine.Messages["exact change"], machine.Display)
+    }
+}
+
+func TestExactChangeOnlyInsufficientBank(t *testing.T) {
+    // a made-up product costing 51 cents
+    machine.Display = machine.Messages["insert"]
+    machine.Products["fake"] = 51
+    machine.RunningTotal = 75
+    machine.Bank = map[Coins.Coin]int{Coins.NewPenny():3, Coins.NewNickel():0, Coins.NewDime():2, Coins.NewQuarter():0}
+    // will need to return 24 cents (2 dimes, 4 pennies) if the madeup product is selected 
     if !machine.NeedsExactChange() {
         t.Errorf("machine needs exact change, but doesn't know it")
     }

@@ -33,7 +33,7 @@ func NewMachine() *Machine {
 	m := new(Machine)
 	m.RunningTotal = 0
 	m.InputCoins = map[Coins.Coin]int{
-		Coins.NewPenny():   0,
+		//Coins.NewPenny():   0,
 		Coins.NewNickel():  0,
 		Coins.NewDime():    0,
 		Coins.NewQuarter(): 0}
@@ -156,14 +156,25 @@ func (m *Machine) SelectProduct(product string) {
     }
 }
 
-// NeedsExactChange will alert the machine that it is not capable of returning change for any products
+// NeedsExactChange will alert the machine that it is not capable of returning change for all products
 func (m *Machine) NeedsExactChange() bool {
-    needExactChange := true
-    for _,coinCount := range(m.Bank) {
-        if coinCount > 0{needExactChange = false}
+    theoreticalMachine := NewMachine() 
+    for product,price := range(m.Products) {
+        for coin := range(theoreticalMachine.InputCoins) {
+            theoreticalMachine.RunningTotal = price + coin.Value
+            theoreticalMachine.SelectProduct(product)
+            theoreticalChange := theoreticalMachine.DispenseChange()
+            for theoreticalChangeCoin, theoreticalCoinCount := range(theoreticalChange) {
+                if theoreticalCoinCount > m.Bank[theoreticalChangeCoin] {
+                    m.Display = m.Messages["exact change"]
+                    return true
+                }
+            }
+        }
+        
     }
-    m.Display = m.Messages["exact change"]
-    return needExactChange
+    m.Display = m.Messages["insert"]
+    return false
 }
 
 /*
