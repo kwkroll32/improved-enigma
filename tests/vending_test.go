@@ -12,6 +12,11 @@ import (
 
 // initialize a vending machine instance for the tests
 var machine = VendingMachine.NewMachine()
+// initialize some coins for the tests
+var quarter = Coins.NewCoin("quarter")
+var dime = Coins.NewCoin("dime")
+var nickel = Coins.NewCoin("nickel")
+var penny = Coins.NewCoin("penny")
 
 /* throwing all errors from the same function means that `go test` will report the same line number for all errors
    but still tells from which function the error originated */
@@ -57,10 +62,10 @@ func loadACoin(t *testing.T) func(coinIn Coins.Coin) {
 func TestAcceptCoins(t *testing.T) {
 	testAddingThisCoin := loadACoin(t)
 	coinTests := []Coins.Coin{
-		Coins.NewCoin("penny"),
-		Coins.NewCoin("nickel"),
-		Coins.NewCoin("dime"),
-		Coins.NewCoin("quarter"),
+		penny,
+		nickel,
+		dime,
+		quarter,
 		Coins.NewCoin("11-cent")}
 	for _, coin := range coinTests {
 		testAddingThisCoin(coin)
@@ -68,9 +73,7 @@ func TestAcceptCoins(t *testing.T) {
 }
 
 func TestIdentifyCoins(t *testing.T) {
-	var coin Coins.Coin
-	for name, expVal := range map[string]int{"penny": 1, "nickel": 5, "dime": 10, "quarter": 25} {
-		coin = Coins.NewCoin(name)
+	for coin, expVal := range map[Coins.Coin]int{penny: 1, nickel: 5, dime: 10, quarter: 25} {
 		if VendingMachine.IdentifyCoin(coin) != expVal {
 			throwTestingErrorInt(t, expVal, coin.Value)
 		}
@@ -101,13 +104,13 @@ func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
-	machine.AcceptCoins(Coins.NewCoin("nickel"))
+	machine.AcceptCoins(nickel)
     if dollars := float64(machine.RunningTotal)/100.0; machine.Display != "$" + strconv.FormatFloat(dollars,'f',2,32) {
         throwTestingErrorDisplayString(t, machine.Display, "$" + strconv.FormatFloat(dollars,'f',2,32))
     }
-	machine.AcceptCoins(Coins.NewCoin("nickel"))
-	machine.AcceptCoins(Coins.NewCoin("nickel"))
-	machine.AcceptCoins(Coins.NewCoin("quarter"))
+	machine.AcceptCoins(nickel)
+	machine.AcceptCoins(nickel)
+	machine.AcceptCoins(quarter)
 	if machine.RunningTotal != 40 {
 		throwTestingErrorInt(t, 40, machine.RunningTotal)
 	}
@@ -137,10 +140,7 @@ func TestCustomerSelectsAtExactChange(t *testing.T) {
 }
 
 func TestMachineMakeChange(t *testing.T) {
-    quarter := Coins.NewCoin("quarter")
-    dime := Coins.NewCoin("dime")
-    nickel := Coins.NewCoin("nickel")
-    penny := Coins.NewCoin("penny")
+    
     
     // return a quarter 
     machine.RunningTotal = 25

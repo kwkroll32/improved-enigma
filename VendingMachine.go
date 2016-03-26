@@ -97,6 +97,12 @@ func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 	return outCoins
 }
 
+// DispenseChange will make change based on the current, remaining RunningTotal 
+func (m *Machine) DispenseChange() map[Coins.Coin]int {
+    //
+    return make(map[Coins.Coin]int)
+}
+
 // ShowSelections will print the available items and thier prices 
 func (m *Machine) ShowSelections() {
     selectionString := ""
