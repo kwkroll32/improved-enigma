@@ -162,6 +162,15 @@ func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
     if machine.Display != machine.Messages["thanks"] {
         throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"] )
     }
+    change := machine.DispenseChange()
+    if change[quarter] != 2 {
+        throwTestingErrorInt(t, 2, change[quarter])
+    }
+    for _,coin := range( []Coins.Coin{dime, nickel, penny} ) {
+        if change[coin] != 0 {
+            throwTestingErrorInt(t, 0, change[coin])
+        }
+    }
     if machine.RunningTotal != 0 {
         throwTestingErrorInt(t, 0, machine.RunningTotal)
     }

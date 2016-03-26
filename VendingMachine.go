@@ -112,17 +112,6 @@ func (m *Machine) DispenseChange() map[Coins.Coin]int {
         m.RunningTotal = m.RunningTotal%coin.Value 
         change[coin] = count
     }
-    
-    /*
-    // start with quarters
-    quarterCount := m.RunningTotal/25
-    m.RunningTotal = m.RunningTotal % 25
-    change[quarter] = quarterCount
-    // then dimes 
-    dimeCount := m.RunningTotal/10
-    m.RunningTotal = m.RunningTotal % 10
-    change[dime] = dimeCount
-    */
     return change
 }
 
