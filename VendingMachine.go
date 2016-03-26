@@ -135,11 +135,17 @@ func (m *Machine) ShowSelections() {
 // SelectProduct will allow a customer to select their purchase
 func (m *Machine) SelectProduct(product string) {
 	price := m.Products[product]
-	if m.RunningTotal >= price {
+	if m.RunningTotal >= price && m.Stock[product]>0 {
 		// dispense product
 		m.Display = m.Messages["thanks"]
 		m.RunningTotal -= price
-	}
+	} else if m.RunningTotal < price {
+		// prompt for coins 
+		m.Display = m.Messages["insert"]
+    } else if m.Stock[product]==0 {
+        // sold out 
+        m.Display = m.Messages["sold out"]
+    }
 }
 
 /*

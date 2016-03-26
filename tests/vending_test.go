@@ -133,7 +133,7 @@ func TestCustomerSelectsAtExactChange(t *testing.T) {
 	machine.RunningTotal = machine.Products["chips"]
 	machine.SelectProduct("chips")
 	if machine.Display != machine.Messages["thanks"] {
-		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"])
+		throwTestingErrorDisplayString(t, machine.Messages["thanks"], machine.Display)
 	}
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
@@ -161,7 +161,7 @@ func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
 	machine.RunningTotal = machine.Products["chips"] + 66
 	machine.SelectProduct("chips")
 	if machine.Display != machine.Messages["thanks"] {
-		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"])
+		throwTestingErrorDisplayString(t, machine.Messages["thanks"], machine.Display)
 	}
 	change := machine.DispenseChange()
 	if change[quarter] != 2 {
@@ -175,6 +175,17 @@ func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
+}
+
+func TestCustomerSelectsWithInsufficientMoney(t *testing.T) {
+    machine.RunningTotal = machine.Products["chips"]/2
+    machine.SelectProduct("chips")
+    if machine.Display != machine.Messages["insert"] {
+		throwTestingErrorDisplayString(t, machine.Messages["insert"],machine.Display)
+	}
+    if machine.RunningTotal != machine.Products["chips"]/2 {
+        throwTestingErrorInt(t, machine.Products["chips"]/2, machine.RunningTotal)
+    }
 }
 
 func TestSelectSomethingSoldOut(t *testing.T) {
