@@ -14,10 +14,10 @@ import (
 var machine = VendingMachine.NewMachine()
 
 // initialize some coins for the tests
-var quarter = Coins.NewCoin("quarter")
-var dime = Coins.NewCoin("dime")
-var nickel = Coins.NewCoin("nickel")
-var penny = Coins.NewCoin("penny")
+var quarter = Coins.NewQuarter()
+var dime = Coins.NewDime()
+var nickel = Coins.NewNickel()
+var penny = Coins.NewPenny()
 
 /* throwing all errors from the same function means that `go test` will report the same line number for all errors
    but still tells from which function the error originated */
@@ -66,8 +66,7 @@ func TestAcceptCoins(t *testing.T) {
 		penny,
 		nickel,
 		dime,
-		quarter,
-		Coins.NewCoin("11-cent")}
+		quarter}
 	for _, coin := range coinTests {
 		testAddingThisCoin(coin)
 	}

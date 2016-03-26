@@ -31,10 +31,10 @@ func NewMachine() *Machine {
 	m := new(Machine)
 	m.RunningTotal = 0
 	m.InputCoins = map[Coins.Coin]int{
-		Coins.NewCoin("penny"):   0,
-		Coins.NewCoin("nickel"):  0,
-		Coins.NewCoin("dime"):    0,
-		Coins.NewCoin("quarter"): 0}
+		Coins.NewPenny():   0,
+		Coins.NewNickel():  0,
+		Coins.NewDime():    0,
+		Coins.NewQuarter(): 0}
 	m.Messages = map[string]string{
 		"invalid": "INVALID COIN",
 		"coin na": "COIN NOT AVAILABLE",
@@ -106,10 +106,10 @@ func (m *Machine) ReturnAllCoins() []Coins.Coin {
 
 // DispenseChange will make change based on the current, remaining RunningTotal
 func (m *Machine) DispenseChange() map[Coins.Coin]int {
-	var quarter = Coins.NewCoin("quarter")
-	var dime = Coins.NewCoin("dime")
-	var nickel = Coins.NewCoin("nickel")
-	var penny = Coins.NewCoin("penny")
+	var quarter = Coins.NewQuarter()
+	var dime = Coins.NewDime()
+	var nickel = Coins.NewNickel()
+	var penny = Coins.NewPenny()
 
 	change := make(map[Coins.Coin]int)
 	var count int
@@ -166,7 +166,9 @@ func IsValidCoinValue(c int) bool {
 // IdentifyCoin will identify the coin and return the numerical value
 func IdentifyCoin(coin Coins.Coin) int {
 	for _, coinProperties := range Coins.CoinTypes {
-		if coin.Thickness == coinProperties["thickness"] && coin.Weight == coinProperties["weight"] && coin.Diameter == coinProperties["diameter"] {
+		if coin.Thickness     == coinProperties["thickness"] && 
+                coin.Weight   == coinProperties["weight"]    && 
+                coin.Diameter == coinProperties["diameter"]  {
 			return int(coinProperties["value"])
 		}
 	}
