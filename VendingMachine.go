@@ -27,6 +27,10 @@ type Machine struct {
 }
 
 // NewMachine is a constructor for a new machine
+/* It records the total value of input coins,
+   the number of each coin type input,
+   available display messages, 
+   and products (prices and stock count) */
 func NewMachine() *Machine {
 	m := new(Machine)
 	m.RunningTotal = 0

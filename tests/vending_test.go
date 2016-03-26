@@ -199,6 +199,16 @@ func TestSelectSomethingSoldOut(t *testing.T) {
 	}
 }
 
+func TestExactChangeOnly(t *testing.T) {
+    machine.Bank = map[Coins.Coin]int{Coins.NewPenny():0, Coins.NewNickel():0, Coins.NewDime():0, Coins.NewQuarter():0}
+    if !machine.NeedsExactChange() {
+        t.Errorf("machine needs exact change, but doesn't know it")
+    }
+    if machine.Display != machine.Messages["exact change"] {
+        throwTestingErrorDisplayString(t, machine.Messages["exact change"], machine.Display)
+    }
+}
+
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
