@@ -136,6 +136,21 @@ func TestCustomerSelectsAtExactChange(t *testing.T) {
     }
 }
 
+func TestMachineMakeChange(t *testing.T) {
+    quarter := Coins.NewCoin("quarter")
+    dime := Coins.NewCoin("dime")
+    nickel := Coins.NewCoin("nickel")
+    penny := Coins.NewCoin("penny")
+    
+    // return a quarter 
+    machine.RunningTotal = 25
+    var change map[Coins.Coin]int 
+    change = machine.DispenseChange()
+    if change[quarter] != 1 {
+        t.Errorf("expected 1 quarter, got " + strconv.Itoa(change[quarter]))
+    }
+}
+
 func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
     machine.ShowSelections()
     machine.RunningTotal = machine.Products["chips"] + 50
