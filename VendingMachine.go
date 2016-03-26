@@ -99,8 +99,17 @@ func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 
 // DispenseChange will make change based on the current, remaining RunningTotal 
 func (m *Machine) DispenseChange() map[Coins.Coin]int {
-    //
-    return make(map[Coins.Coin]int)
+    var quarter = Coins.NewCoin("quarter")
+    //var dime = Coins.NewCoin("dime")
+    //var nickel = Coins.NewCoin("nickel")
+    //var penny = Coins.NewCoin("penny")
+    
+    change := make(map[Coins.Coin]int)
+    // start with quarters
+    quarterCount := m.RunningTotal/25
+    m.RunningTotal = m.RunningTotal % 25
+    change[quarter] = quarterCount
+    return change
 }
 
 // ShowSelections will print the available items and thier prices 
