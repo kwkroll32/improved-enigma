@@ -101,10 +101,19 @@ func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 func (m *Machine) DispenseChange() map[Coins.Coin]int {
     var quarter = Coins.NewCoin("quarter")
     var dime = Coins.NewCoin("dime")
-    //var nickel = Coins.NewCoin("nickel")
-    //var penny = Coins.NewCoin("penny")
+    var nickel = Coins.NewCoin("nickel")
+    var penny = Coins.NewCoin("penny")
     
     change := make(map[Coins.Coin]int)
+    var count int
+    
+    for _,coin := range( []Coins.Coin{quarter, dime, nickel, penny} ) {
+        count = m.RunningTotal/coin.Value 
+        m.RunningTotal = m.RunningTotal%coin.Value 
+        change[coin] = count
+    }
+    
+    /*
     // start with quarters
     quarterCount := m.RunningTotal/25
     m.RunningTotal = m.RunningTotal % 25
@@ -113,6 +122,7 @@ func (m *Machine) DispenseChange() map[Coins.Coin]int {
     dimeCount := m.RunningTotal/10
     m.RunningTotal = m.RunningTotal % 10
     change[dime] = dimeCount
+    */
     return change
 }
 
