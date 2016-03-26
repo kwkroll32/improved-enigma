@@ -4,7 +4,7 @@ import (
 	"GoVending/Coins"
 	"errors"
 	"strconv"
-    //"fmt"
+	//"fmt"
 )
 
 /*
@@ -12,17 +12,17 @@ import (
 */
 
 // Machine is a class to represent the vending machine
-/* Monitors total input by the customer (cents), 
-    the number of each coin inserted, 
-    important messages/prompts, 
-    products w/ prices (cents),
-    and a string to display on screen */
+/* Monitors total input by the customer (cents),
+   the number of each coin inserted,
+   important messages/prompts,
+   products w/ prices (cents),
+   and a string to display on screen */
 type Machine struct {
 	RunningTotal int
 	InputCoins   map[Coins.Coin]int
 	Messages     map[string]string
-    Products     map[string]int
-    Display      string
+	Products     map[string]int
+	Display      string
 }
 
 // NewMachine is a constructor for a new machine
@@ -38,19 +38,19 @@ func NewMachine() *Machine {
 		"invalid": "INVALID COIN",
 		"coin na": "COIN NOT AVAILABLE",
 		"insert":  "INSERT COIN",
-        "thanks":  "THANK YOU",
+		"thanks":  "THANK YOU",
 	}
-    m.Products = map[string]int{
-        "cola": 100,
-        "chips": 50,
-        "candy": 65,
-    }
-    m.Display = m.Messages["insert"]
+	m.Products = map[string]int{
+		"cola":  100,
+		"chips": 50,
+		"candy": 65,
+	}
+	m.Display = m.Messages["insert"]
 	return m
 }
 
-// ToString will return the current status on the display 
-func (m *Machine) ToString() string {	
+// ToString will return the current status on the display
+func (m *Machine) ToString() string {
 	return m.Display
 }
 
@@ -61,10 +61,10 @@ func (m *Machine) AcceptCoins(inputCoin Coins.Coin) error {
 	if IsValidCoinValue(c) {
 		m.RunningTotal += c
 		m.InputCoins[inputCoin]++
-        dollars := float64(m.RunningTotal)/100.0
-        m.Display = "$" + strconv.FormatFloat(dollars,'f',2,32)
+		dollars := float64(m.RunningTotal) / 100.0
+		m.Display = "$" + strconv.FormatFloat(dollars, 'f', 2, 32)
 	} else {
-        m.Display = m.Messages["invalid"]
+		m.Display = m.Messages["invalid"]
 		err = errors.New(m.Messages["invalid"])
 	}
 	return err
@@ -79,13 +79,13 @@ func (m *Machine) ReturnCoin(heldCoin Coins.Coin) (Coins.Coin, error) {
 		m.RunningTotal -= heldCoin.Value
 		return heldCoin, err
 	}
-    m.Display = m.Messages["coin na"]
+	m.Display = m.Messages["coin na"]
 	err = errors.New(m.Messages["coin na"])
 	return heldCoin, err
 }
 
 // ReturnAllCoins will return all coins that the customer has input
-func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
+func (m *Machine) ReturnAllCoins() []Coins.Coin {
 	var outCoins []Coins.Coin
 	for typeOfCoin, numberOfCoins := range m.InputCoins {
 		for number := 0; number < numberOfCoins; number++ {
@@ -93,46 +93,46 @@ func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 			outCoins = append(outCoins, coin)
 		}
 	}
-    m.Display = m.Messages["insert"]
+	m.Display = m.Messages["insert"]
 	return outCoins
 }
 
-// DispenseChange will make change based on the current, remaining RunningTotal 
+// DispenseChange will make change based on the current, remaining RunningTotal
 func (m *Machine) DispenseChange() map[Coins.Coin]int {
-    var quarter = Coins.NewCoin("quarter")
-    var dime = Coins.NewCoin("dime")
-    var nickel = Coins.NewCoin("nickel")
-    var penny = Coins.NewCoin("penny")
-    
-    change := make(map[Coins.Coin]int)
-    var count int
-    
-    for _,coin := range( []Coins.Coin{quarter, dime, nickel, penny} ) {
-        count = m.RunningTotal/coin.Value 
-        m.RunningTotal = m.RunningTotal%coin.Value 
-        change[coin] = count
-    }
-    return change
+	var quarter = Coins.NewCoin("quarter")
+	var dime = Coins.NewCoin("dime")
+	var nickel = Coins.NewCoin("nickel")
+	var penny = Coins.NewCoin("penny")
+
+	change := make(map[Coins.Coin]int)
+	var count int
+
+	for _, coin := range []Coins.Coin{quarter, dime, nickel, penny} {
+		count = m.RunningTotal / coin.Value
+		m.RunningTotal = m.RunningTotal % coin.Value
+		change[coin] = count
+	}
+	return change
 }
 
-// ShowSelections will print the available items and thier prices 
+// ShowSelections will print the available items and thier prices
 func (m *Machine) ShowSelections() {
-    selectionString := ""
-    for product, price := range(m.Products) {
-        dollars := float64(price)/100.0
-        selectionString += product + " $" + strconv.FormatFloat(dollars,'f',2,32) + "\n"
-    }
-    m.Display = selectionString
+	selectionString := ""
+	for product, price := range m.Products {
+		dollars := float64(price) / 100.0
+		selectionString += product + " $" + strconv.FormatFloat(dollars, 'f', 2, 32) + "\n"
+	}
+	m.Display = selectionString
 }
 
 // SelectProduct will allow a customer to select their purchase
 func (m *Machine) SelectProduct(product string) {
-    price := m.Products[product]
-    if  m.RunningTotal >= price {
-        // dispense product
-        m.Display = m.Messages["thanks"]
-        m.RunningTotal -= price
-    }
+	price := m.Products[product]
+	if m.RunningTotal >= price {
+		// dispense product
+		m.Display = m.Messages["thanks"]
+		m.RunningTotal -= price
+	}
 }
 
 /*

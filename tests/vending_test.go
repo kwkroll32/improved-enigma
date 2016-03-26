@@ -12,6 +12,7 @@ import (
 
 // initialize a vending machine instance for the tests
 var machine = VendingMachine.NewMachine()
+
 // initialize some coins for the tests
 var quarter = Coins.NewCoin("quarter")
 var dime = Coins.NewCoin("dime")
@@ -40,16 +41,16 @@ func loadACoin(t *testing.T) func(coinIn Coins.Coin) {
 		err = machine.AcceptCoins(coinIn)
 		if err == nil {
 			// the machine took the coin fine
-            if dollars := float64(machine.RunningTotal)/100.0; machine.Display != "$" + strconv.FormatFloat(dollars,'f',2,32) {
-                throwTestingErrorDisplayString(t, machine.Display, "$" + strconv.FormatFloat(dollars,'f',2,32))
-            }
+			if dollars := float64(machine.RunningTotal) / 100.0; machine.Display != "$"+strconv.FormatFloat(dollars, 'f', 2, 32) {
+				throwTestingErrorDisplayString(t, machine.Display, "$"+strconv.FormatFloat(dollars, 'f', 2, 32))
+			}
 			localTotal += coinIn.Value
 		} else if err != nil {
 			// the machine failed to take this coin
 			// the coin should be returned
-            if machine.Display != machine.Messages["invalid"] {
-                throwTestingErrorDisplayString(t, machine.Messages["invalid"], machine.Display)
-            }
+			if machine.Display != machine.Messages["invalid"] {
+				throwTestingErrorDisplayString(t, machine.Messages["invalid"], machine.Display)
+			}
 			//fmt.Println(err)
 		}
 		if machine.RunningTotal != localTotal {
@@ -98,16 +99,16 @@ func TestReturnAllCoinsLoop(t *testing.T) {
 
 func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	machine.ReturnAllCoins()
-    if machine.Display != machine.Messages["insert"] {
-        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["insert"])
-    }
+	if machine.Display != machine.Messages["insert"] {
+		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["insert"])
+	}
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
 	machine.AcceptCoins(nickel)
-    if dollars := float64(machine.RunningTotal)/100.0; machine.Display != "$" + strconv.FormatFloat(dollars,'f',2,32) {
-        throwTestingErrorDisplayString(t, machine.Display, "$" + strconv.FormatFloat(dollars,'f',2,32))
-    }
+	if dollars := float64(machine.RunningTotal) / 100.0; machine.Display != "$"+strconv.FormatFloat(dollars, 'f', 2, 32) {
+		throwTestingErrorDisplayString(t, machine.Display, "$"+strconv.FormatFloat(dollars, 'f', 2, 32))
+	}
 	machine.AcceptCoins(nickel)
 	machine.AcceptCoins(nickel)
 	machine.AcceptCoins(quarter)
@@ -121,59 +122,59 @@ func TestReturnAllCoinsMachineFunction(t *testing.T) {
 	if machine.RunningTotal != 0 {
 		throwTestingErrorInt(t, 0, machine.RunningTotal)
 	}
-    machine.Display = "force test fail"
-    if machine.Display == machine.Messages["insert"] {
-        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["insert"] )
-    }
+	machine.Display = "force test fail"
+	if machine.Display == machine.Messages["insert"] {
+		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["insert"])
+	}
 }
 
 func TestCustomerSelectsAtExactChange(t *testing.T) {
-    machine.ShowSelections()
-    machine.RunningTotal = machine.Products["chips"]
-    machine.SelectProduct("chips")
-    if machine.Display != machine.Messages["thanks"] {
-        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"] )
-    }
-    if machine.RunningTotal != 0 {
-        throwTestingErrorInt(t, 0, machine.RunningTotal)
-    }
+	machine.ShowSelections()
+	machine.RunningTotal = machine.Products["chips"]
+	machine.SelectProduct("chips")
+	if machine.Display != machine.Messages["thanks"] {
+		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"])
+	}
+	if machine.RunningTotal != 0 {
+		throwTestingErrorInt(t, 0, machine.RunningTotal)
+	}
 }
 
 func TestMachineMakeChange(t *testing.T) {
-    var change map[Coins.Coin]int 
-    // return a quarter 
-    machine.RunningTotal = 25
-    change = machine.DispenseChange()
-    if change[quarter] != 1 {
-        t.Errorf("expected 1 quarter, got " + strconv.Itoa(change[quarter]))
-    }
-    // return two dimes 
-    machine.RunningTotal = 20
-    change = machine.DispenseChange()
-    if change[dime] != 2 {
-        t.Errorf("expected 2 dimes, got " + strconv.Itoa(change[dime]))
-    }
+	var change map[Coins.Coin]int
+	// return a quarter
+	machine.RunningTotal = 25
+	change = machine.DispenseChange()
+	if change[quarter] != 1 {
+		t.Errorf("expected 1 quarter, got " + strconv.Itoa(change[quarter]))
+	}
+	// return two dimes
+	machine.RunningTotal = 20
+	change = machine.DispenseChange()
+	if change[dime] != 2 {
+		t.Errorf("expected 2 dimes, got " + strconv.Itoa(change[dime]))
+	}
 }
 
 func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
-    machine.ShowSelections()
-    machine.RunningTotal = machine.Products["chips"] + 50
-    machine.SelectProduct("chips")
-    if machine.Display != machine.Messages["thanks"] {
-        throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"] )
-    }
-    change := machine.DispenseChange()
-    if change[quarter] != 2 {
-        throwTestingErrorInt(t, 2, change[quarter])
-    }
-    for _,coin := range( []Coins.Coin{dime, nickel, penny} ) {
-        if change[coin] != 0 {
-            throwTestingErrorInt(t, 0, change[coin])
-        }
-    }
-    if machine.RunningTotal != 0 {
-        throwTestingErrorInt(t, 0, machine.RunningTotal)
-    }
+	machine.ShowSelections()
+	machine.RunningTotal = machine.Products["chips"] + 50
+	machine.SelectProduct("chips")
+	if machine.Display != machine.Messages["thanks"] {
+		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["thanks"])
+	}
+	change := machine.DispenseChange()
+	if change[quarter] != 2 {
+		throwTestingErrorInt(t, 2, change[quarter])
+	}
+	for _, coin := range []Coins.Coin{dime, nickel, penny} {
+		if change[coin] != 0 {
+			throwTestingErrorInt(t, 0, change[coin])
+		}
+	}
+	if machine.RunningTotal != 0 {
+		throwTestingErrorInt(t, 0, machine.RunningTotal)
+	}
 }
 
 func TestMain(m *testing.M) {
