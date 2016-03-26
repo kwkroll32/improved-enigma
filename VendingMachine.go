@@ -100,7 +100,7 @@ func (m *Machine) ReturnAllCoins() ([]Coins.Coin) {
 // DispenseChange will make change based on the current, remaining RunningTotal 
 func (m *Machine) DispenseChange() map[Coins.Coin]int {
     var quarter = Coins.NewCoin("quarter")
-    //var dime = Coins.NewCoin("dime")
+    var dime = Coins.NewCoin("dime")
     //var nickel = Coins.NewCoin("nickel")
     //var penny = Coins.NewCoin("penny")
     
@@ -109,6 +109,10 @@ func (m *Machine) DispenseChange() map[Coins.Coin]int {
     quarterCount := m.RunningTotal/25
     m.RunningTotal = m.RunningTotal % 25
     change[quarter] = quarterCount
+    // then dimes 
+    dimeCount := m.RunningTotal/10
+    m.RunningTotal = m.RunningTotal % 10
+    change[dime] = dimeCount
     return change
 }
 

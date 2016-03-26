@@ -140,14 +140,18 @@ func TestCustomerSelectsAtExactChange(t *testing.T) {
 }
 
 func TestMachineMakeChange(t *testing.T) {
-    
-    
+    var change map[Coins.Coin]int 
     // return a quarter 
     machine.RunningTotal = 25
-    var change map[Coins.Coin]int 
     change = machine.DispenseChange()
     if change[quarter] != 1 {
         t.Errorf("expected 1 quarter, got " + strconv.Itoa(change[quarter]))
+    }
+    // return two dimes 
+    machine.RunningTotal = 20
+    change = machine.DispenseChange()
+    if change[dime] != 2 {
+        t.Errorf("expected 2 dimes, got " + strconv.Itoa(change[dime]))
     }
 }
 
