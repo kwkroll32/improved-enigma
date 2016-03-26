@@ -177,6 +177,17 @@ func TestCustomerSelectsWithMoreThanEnoughMoney(t *testing.T) {
 	}
 }
 
+func TestSelectSomethingSoldOut(t *testing.T) {
+    machine.RunningTotal = machine.Products["chips"]
+    machine.SelectProduct("chips")
+    if machine.Display == machine.Messages["thanks"] {
+		throwTestingErrorDisplayString(t, machine.Display, machine.Messages["sold out"])
+	}
+    if machine.RunningTotal != machine.Products["chips"] {
+		throwTestingErrorInt(t, machine.Products["chips"], machine.RunningTotal)
+	}
+}
+
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
